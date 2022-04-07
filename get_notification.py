@@ -2,8 +2,12 @@ import json
 import subprocess
 
 
-subprocess.run("termux-api-start")
+#subprocess.run("termux-api-start")
 
-json_not= subprocess,Popen("termux-notifications-list", stdout=subprocess.PIPE)
+json_not = subprocess.Popen('termux-notification-list', stdout=subprocess.PIPE)
 
-print(json_not)
+true_json = json.loads(''.join([l.decode('utf-8').replace('\n', '') for l in json_not.stdout]))
+json_not.stdout.close()
+
+
+print(true_json[0].keys())

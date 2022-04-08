@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+
+subprocess.run("termux-api-start")
+subprocess.run("termux-notification -t 'lyricsd started' -c 'at {}'".format(time.asctime()))
+

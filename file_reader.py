@@ -16,8 +16,11 @@ def create_not(content):
 
 with open(file_name, 'r') as f:
     nums=[line for line in f]
+try:
+    idx=int(sys.argv[1])
+except IndexError:
+    idx=0
 
-idx=int(sys.argv[1])
 _ceiled_val=ceil(int(len(nums) / lines_per_site))
 if idx < 0:
     raise IndexError("index is negative")

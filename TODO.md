@@ -1,0 +1,1 @@
+-tapping on the notification refreshes it so a regulary background check is not needed. that would help reducing the amount of ressources needed

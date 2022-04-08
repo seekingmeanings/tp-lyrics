@@ -1,15 +1,30 @@
 #!/usr/bin/env python3
 import subprocess as sp
 from time import asctime
-from notification import getCurrent
 import sys
+import json
+
+#make sure the api is running
+sp.run("termux-api-start", check=True)
 
 
 def toast(msg, position="bottom", bc="white", tc="black"):
     sp.run(['termux-toast', '-g', position, '-b', bc, '-c', tc, msg])
 
-#make sure the api is running
-sp.run("termux-api-start")
+
+def getCurrent():
+    try:
+        current=[]
+        otp = sp.Popen('termux-notification-list', stdout=sp.PIPE)
+        
+        otp.wait()
+        for n in json.loads(str().join([str(l.decode('utf-8').replace('\n', '')) for l in otp.stdout])):
+            if n['packageName'] == 'com.rhapsody.alditalk' and n['id'] != 1:
+                current.append((n['content'],n['title']))
+    finally:
+        otp.stdout.close()
+    return current
+
 
 
 def getLyrics(current):
@@ -24,4 +39,4 @@ def getLyrics(current):
 
 
 if __name__ == "__main__":
-    print(ck_lyrics(getCurrent()))
+    print(getLyrics(getCurrent()))

@@ -3,17 +3,16 @@ import sys
 from subprocess import run
 from math import ceil
 
-
 file_name="/data/data/com.termux/files/home/lyrics/numbers"
 lines_per_site=11
 notification_id=3933
+SELF_CALL="env python3 $HOME/lyrics/file_reader.py {}"
 
 def create_not(content):
     run(["termux-notification", "-i", str(notification_id),  "--button1", "previous", "--button1-action",\
-         "env python3 $HOME/lyrics/n_reader.py {}".format(idx-1), "--button2", "next", "--button2-action", \
-         "env python3 $HOME/lyrics/n_reader.py {}".format(idx+1), "--button3", "exit", "--button3-action", \
-         "termux-notification-remove {}".format(notification_id), "--ongoing", "-t", file_name, "-c",\
-         ''.join(content) ])
+         SELF_CALL.format(idx-1), "--button2", "next", "--button2-action", SELF_CALL.format(idx+1),\
+         "--button3", "exit", "--button3-action", "termux-notification-remove {}".format(notification_id), \
+         "--ongoing", "-t", file_name, "-c", ''.join(content) ])
 
 with open(file_name, 'r') as f:
     nums=[line for line in f]

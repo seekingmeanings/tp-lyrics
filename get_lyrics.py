@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import subprocess as sp
 from time import asctime
-import sys
+import os.path
 import json
 import lyricsgenius
 
@@ -27,26 +27,36 @@ def getCurrent():
                 current.append((n['content'],n['title']))
     finally:
         otp.stdout.close()
-    return current
 
-def fetch_lyrics(current):
+    if len(current) > 1:
+        toast("to many players running")
+        raise IndexError("found multiple music control notifications")
+    elif len(current) == 0:
+        toast("nothing is playing, couldn't search for lyrics")
+        raise IndexError("failed to get the current song name.\nGot: {}".format(crt))
+  
+    return (current, "{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],\
+                                                  song=current[0][1]))
+
+
+
+def fetch_lyrics(current, path):
     lapi=lyricsgenius.Genius(token, skip_non_songs=True)
     song=lapi.search_song(str(current[0][1]), str(current[0][0]))
 
     try:
-        with open("{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],song=current[0][1]), 'w') as f:
+        with open(path, 'w') as f:
             f.write(song.lyrics)
     except AttributeError:
         toast("genius didn't send anything back")
-        return False
-    toast("lyrics fetched from genius")
-    return song.lyrics
+        raise RuntimeError("genius api didn't open up lyrics attribute")
 
 
-def display_lyrics(current):
-    open_file("{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],\
-                                           song=current[0][1]))
-
+def display_lyrics(current, path):
+    if not os.path.exists(path): fetch_lyrics(current, path)
+    open_file(path)
+    
+    
 
 def print_lyrics(current):
     #this if statement should be in the level above
@@ -57,14 +67,10 @@ def print_lyrics(current):
     except FileNotFoundError:
         return fetch_lyrics(current)
 
+                           
 if __name__ == "__main__":
     #add argparse so current can be read from args
 
-    crt=getCurrent()
-    if len(crt) != 1:
-        toast("nothing is playing, couldn't search for lyrics")
-        raise IndexError("failed to get the current song name.\nGot: {}".format(crt))
-    display_lyrics(crt)
-
-
+    crt, path=getCurrent()
+    display_lyrics(crt, path)
 

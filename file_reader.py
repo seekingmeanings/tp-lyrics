@@ -1,11 +1,11 @@
 #/usr/bin/env python3
-import sys
 import argparse
 
 from subprocess import run
 
 from math import ceil
 from random import randint
+
 
 def open_file(file_name:str,nid:int,idx:int):
     LINES_PER_SITE=11

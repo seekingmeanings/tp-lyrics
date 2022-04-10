@@ -6,9 +6,10 @@ import json
 import lyricsgenius
 
 from local_utils import toast
+from file_reader import open_file
 
-
-DATA="/data/data/com.termux/files/home/lyrics/data"
+WORK_DIR="/data/data/com.termux/files/home/lyrics"
+DATA_DIR=WORK_DIR + "/data"
 
 #get the api-token
 with open("/data/data/com.termux/files/home/lyrics/genius-token") as f:
@@ -29,11 +30,11 @@ def getCurrent():
     return current
 
 def fetch_lyrics(current):
-    lapi=lyricsgenius.Genius(token, skip_non_songs=Truep)
+    lapi=lyricsgenius.Genius(token, skip_non_songs=True)
     song=lapi.search_song(str(current[0][1]), str(current[0][0]))
 
     try:
-        with open("{D}/{artist}%{song}".format(D=DATA,artist=current[0][0],song=current[0][1]), 'w') as f:
+        with open("{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],song=current[0][1]), 'w') as f:
             f.write(song.lyrics)
     except AttributeError:
         toast("genius didn't send anything back")
@@ -42,16 +43,27 @@ def fetch_lyrics(current):
     return song.lyrics
 
 
-def getLyrics(current):
+def display_lyrics(current):
+    open_file("{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],\
+                                           song=current[0][1]))
+
+
+def print_lyrics(current):
     #this if statement should be in the level above
-    if len(current) != 1: raise IndexError("failed to get the current song name.\nGot: {}".format(current))
     try:
-        with open("{D}/{artist}%{song}".format(D=DATA,artist=current[0][0],song=current[0][1]), 'r') as f:
+        with open("{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],song=current[0][1]), 'r') as f:
             toast("lyrics found")
             return f.readlines()
     except FileNotFoundError:
         return fetch_lyrics(current)
 
-
 if __name__ == "__main__":
-    print(getLyrics(getCurrent()))
+    #add argparse so current can be read from args
+
+    crt=getCurrent()
+    if len(crt) != 1:
+        raise IndexError("failed to get the current song name.\nGot: {}".format(crt))
+    display_lyrics(crt)
+
+
+

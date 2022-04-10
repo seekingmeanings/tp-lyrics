@@ -1,1 +1,2 @@
--tapping on the notification refreshes it so a regulary background check is not needed. that would help reducing the amount of ressources needed
+- make lyricsd (could be managed from fake-lyricsd???! (displayibg the status of lyricsd and a "switch" to toggle the background ops (maybe even change the period of time between checks)))
+- add filter options for artist and song names, so fe BT gets recognised (sed??)

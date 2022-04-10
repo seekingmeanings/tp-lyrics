@@ -39,7 +39,7 @@ def fetch_lyrics(current):
     except AttributeError:
         toast("genius didn't send anything back")
         return False
-    toast("lyrics fetched")
+    toast("lyrics fetched from genius")
     return song.lyrics
 
 
@@ -62,6 +62,7 @@ if __name__ == "__main__":
 
     crt=getCurrent()
     if len(crt) != 1:
+        toast("nothing is playing, couldn't search for lyrics")
         raise IndexError("failed to get the current song name.\nGot: {}".format(crt))
     display_lyrics(crt)
 

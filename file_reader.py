@@ -39,7 +39,7 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
                  "--button3-action", f"termux-notification-remove {nid}",\
                  "--ongoing", "-t", file_name if fp else\
                  file_name.split('/')[-1].replace('%', ' - '), "-c",\
-                 ''.join(content) ])
+                 ''.join(content) ], check=True)
             
             
 if __name__ == "__main__":

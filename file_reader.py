@@ -7,7 +7,11 @@ from math import ceil
 from random import randint
 
 
-def open_file(file_name:str,nid:int,idx:int):
+def open_file(file_name:str,nid=randint(10,10000),idx=0):
+
+    idx=int(idx)
+    nid=int(nid)
+    
     LINES_PER_SITE=11
     SELF_CALL=f"env python3 $HOME/lyrics/file_reader.py -i {nid} -f '{file_name}'"\
         + " -p {i}"

@@ -37,7 +37,7 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
                  "--button1-action", SELF_CALL.format(i=idx-1), "--button2", "next",\
                  "--button2-action", SELF_CALL.format(i=idx+1), "--button3", "exit", \
                  "--button3-action", f"termux-notification-remove {nid}",\
-                 "--ongoing", "-t", file_name if fp else\
+                 "--alert-once", "-t", file_name if fp else\
                  file_name.split('/')[-1].replace('%', ' - '), "-c",\
                  ''.join(content) ], check=True)
             

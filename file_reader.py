@@ -7,8 +7,10 @@ from math import ceil
 from random import randint
 
 
-def open_file(file_name:str,nid=randint(10,10000),idx=0):
+def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
+    #fp stands for full_path
 
+    #stoopid
     idx=int(idx)
     nid=int(nid)
     
@@ -30,13 +32,14 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0):
             content=nums[idx*LINES_PER_SITE:]
         else:
             content=nums[idx*LINES_PER_SITE:(idx+1)*LINES_PER_SITE]
-            
-            
+
             run(["termux-notification", "-i", str(nid),  "--button1", "previous",\
                  "--button1-action", SELF_CALL.format(i=idx-1), "--button2", "next",\
                  "--button2-action", SELF_CALL.format(i=idx+1), "--button3", "exit", \
                  "--button3-action", f"termux-notification-remove {nid}",\
-                 "--ongoing", "-t", file_name, "-c", ''.join(content) ])
+                 "--ongoing", "-t", file_name if fp else\
+                 file_name.split('/')[-1].replace('%', ' - '), "-c",\
+                 ''.join(content) ])
             
             
 if __name__ == "__main__":

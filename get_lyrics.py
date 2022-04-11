@@ -46,7 +46,8 @@ def fetch_lyrics(current, path):
 
     try:
         with open(path, 'w') as f:
-            f.write(song.lyrics)
+            f.write(song.lyrics.replace(f"{current[0][1]} Lyrics", '', 1))
+        toast("lyrics fetched from genius")
     except AttributeError:
         toast("genius didn't send anything back")
         raise RuntimeError("genius api didn't open up lyrics attribute")

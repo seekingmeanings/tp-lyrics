@@ -9,4 +9,4 @@ run("termux-api-start", check=True)
 
 run(["termux-notification", "-i", str(NID), "--ongoing", "--button1", "search lyrics",\
      "--button1-action",  f"python3 {WORK_DIR}/get_lyrics.py",\
-     "-t", "fake lyricsd is running"], check=True)
+     "-t", "fake-lyricsd is running"], check=True)

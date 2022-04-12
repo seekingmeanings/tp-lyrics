@@ -40,11 +40,19 @@ def getCurrent():
 
 def fetch_lyrics(current, path):
     import lyricsgenius
-
+    from re import match
+    
+    headline=f"{current[0][1]} Lyrics"
+    
     lapi=lyricsgenius.Genius(token, skip_non_songs=True)
     song=lapi.search_song(str(current[0][1]), str(current[0][0]))
-
+    
     try:
+        if not match(headline + '.*', song.lyrics.splitlines()[0]):
+             toast("genius sent back bullshit")
+             raise RuntimeError("headlines don't match:\n- {exp}\n- {got}"\
+                                .format(exp=headline,\
+                                        got=song.lyrics.splitlines()[0]))
         with open(path, 'x') as f:
             f.write(song.lyrics.replace(f"{current[0][1]} Lyrics", '', 1))
         toast("lyrics fetched from genius")

@@ -6,6 +6,7 @@ from subprocess import run
 from math import ceil
 from random import randint
 
+HOME_DIR="/data/data/com.termux/files/home"
 
 def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
     #fp stands for full_path
@@ -20,7 +21,14 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
 
     with open(file_name, 'r') as f:
         nums=[line for line in f]
-        
+
+
+    if len(nums) == 0:
+        run(["termux-notification", "-i", str(nid), "-t",\
+            f"file '{file_name.replace(HOME_DIR, '~', 1)[:50]}' is empty"],\
+            check=True)
+    else:
+            
         _ceiled_val=ceil(int(len(nums) / LINES_PER_SITE))
         if idx < 0:
             raise IndexError("index is negative")
@@ -32,7 +40,7 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
             content=nums[idx*LINES_PER_SITE:]
         else:
             content=nums[idx*LINES_PER_SITE:(idx+1)*LINES_PER_SITE]
-
+            
             run(["termux-notification", "-i", str(nid),  "--button1", "previous",\
                  "--button1-action", SELF_CALL.format(i=idx-1), "--button2", "next",\
                  "--button2-action", SELF_CALL.format(i=idx+1), "--button3", "exit", \
@@ -40,7 +48,6 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
                  "--alert-once", "-t", file_name if fp else\
                  file_name.split('/')[-1].replace('%', ' - '), "-c",\
                  ''.join(content) ], check=True)
-            
             
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -22,13 +22,20 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
     with open(file_name, 'r') as f:
         nums=[line for line in f]
 
-
     if len(nums) == 0:
-        run(["termux-notification", "-i", str(nid), "-t",\
-            f"file '{file_name.replace(HOME_DIR, '~', 1)[:50]}' is empty"],\
+        #importing it here 'cause it's rarly used
+        from re import sub as rs
+        r_e=f"^{HOME_DIR}"
+        
+        run(["termux-notification", "-i", str(nid), "--button1", "exit", \
+             "--button1-action", f"termux-notification-remove {nid}", "-t",\
+             f"file '{rs(r_e, '~', file_name)[:50]}' is empty"\
+             if fp else "{} (empty cache)".format(file_name.split('/')\
+                                            [-1].replace('%', ' - ')),\
+             "-c", '' if fp else
+             f"file '{rs(r_e, '~', file_name)}' is empty" ],\
             check=True)
     else:
-            
         _ceiled_val=ceil(int(len(nums) / LINES_PER_SITE))
         if idx < 0:
             raise IndexError("index is negative")
@@ -56,4 +63,5 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--page", type=int, default=0)
     args=parser.parse_args()
 
-    open_file(file_name=args.file_name, nid=args.notification_id,idx=args.page)
+    open_file(file_name=args.file_name, nid=args.notification_id,\
+              idx=args.page, fp=True)

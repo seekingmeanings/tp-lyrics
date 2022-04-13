@@ -43,10 +43,14 @@ def fetch_lyrics(current, path):
     from re import match
     
     headline=f"{current[0][1]} Lyrics"
-    
-    lapi=lyricsgenius.Genius(token, skip_non_songs=True)
-    song=lapi.search_song(str(current[0][1]), str(current[0][0]))
-    
+
+    try:
+        lapi=lyricsgenius.Genius(token, skip_non_songs=True)
+        song=lapi.search_song(str(current[0][1]), str(current[0][0]))
+    except ConnectionError as e:
+        toast("connection to genius timed out")
+        raise ConnectionError(e)
+        
     try:
         if not match(headline + '.*', song.lyrics.splitlines()[0]):
              toast("genius sent back bullshit")

@@ -1,24 +1,27 @@
 #/usr/bin/env python3
 import argparse
-
 from subprocess import run
 
 from math import ceil
 from random import randint
 
+from local_utils import toast
+
 HOME_DIR="/data/data/com.termux/files/home"
 
 def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
     #fp stands for full_path
-
+    fp= False if fp is None else fp
+        
     #stoopid
     idx=int(idx)
     nid=int(nid)
     
     LINES_PER_SITE=11
     SELF_CALL=f"env python3 $HOME/lyrics/file_reader.py -i {nid} -f '{file_name}'"\
-        + " -p {i}"
+        + (" -m" if fp else "") + " -p {i}"
 
+    print(SELF_CALL)
     with open(file_name, 'r') as f:
         nums=[line for line in f]
 
@@ -30,10 +33,9 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
         run(["termux-notification", "-i", str(nid), "--button1", "exit", \
              "--button1-action", f"termux-notification-remove {nid}", "-t",\
              f"file '{rs(r_e, '~', file_name)[:50]}' is empty"\
-             if fp else "{} (empty cache)".format(file_name.split('/')\
-                                            [-1].replace('%', ' - ')),\
-             "-c", '' if fp else
-             f"file '{rs(r_e, '~', file_name)}' is empty" ],\
+             if fp else "{} (empty cache)"\
+             .format(file_name.split('/')[-1].replace('%', ' - ')),\
+             "-c", '' if fp else f"file '{rs(r_e, '~', file_name)}' is empty" ],\
             check=True)
     else:
         _ceiled_val=ceil(int(len(nums) / LINES_PER_SITE))
@@ -61,7 +63,8 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--notification_id", type=int, default=randint(10,10000))
     parser.add_argument("-f", "--file_name", type=str)
     parser.add_argument("-p", "--page", type=int, default=0)
+    parser.add_argument("-m", "--music_mode", action="store_true")
     args=parser.parse_args()
 
     open_file(file_name=args.file_name, nid=args.notification_id,\
-              idx=args.page, fp=True)
+              idx=args.page, fp=args.music_mode)

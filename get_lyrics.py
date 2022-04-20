@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import subprocess as sp
 import os.path
-import json
+import json, re
 
 from local_utils import toast
 from file_reader import open_file
@@ -25,14 +25,29 @@ def getCurrent():
                 current.append((n['content'],n['title']))
     finally:
         otp.stdout.close()
-
+    
     if len(current) > 1:
         toast("to many players running")
         raise IndexError("found multiple music control notifications")
     elif len(current) == 0:
         toast("nothing is playing, couldn't search for lyrics")
         raise IndexError("failed to get the current song name.\nGot: {}".format(crt))
-  
+
+    try:
+        if False:
+            with open(f"{WORK_DIR}/name_sub.conf", 'r') as f:
+                print("sylib file found")
+                for i, line in enumerate(f):
+                    print(line)
+                    rp=tuple(str(line))
+                    print(rp)
+                    re.sub(rp[0], rp[1], f"{current[0][0]}%{current[0][1]}")
+                    
+    except FileNotFoundError:
+        print("no sub file found, skipping")
+        pass
+
+    
     return (current, "{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],\
                                                   song=current[0][1]))
 
@@ -40,7 +55,6 @@ def getCurrent():
 
 def fetch_lyrics(current, path):
     import lyricsgenius
-    from re import match
     
     headline=f"{current[0][1]} Lyrics"
 
@@ -52,7 +66,7 @@ def fetch_lyrics(current, path):
         raise ConnectionError(e)
         
     try:
-        if not match(headline + '.*', song.lyrics.splitlines()[0]):
+        if not re.match(headline + '.*', song.lyrics.splitlines()[0]):
              toast("genius sent back bullshit")
              raise RuntimeError("headlines don't match:\n- {exp}\n- {got}"\
                                 .format(exp=headline,\
@@ -68,12 +82,6 @@ def fetch_lyrics(current, path):
         raise RuntimeError("lyrics file found, delete it if you want to overwrite")
     
 
-def display_lyrics(current, path):
-    if not os.path.exists(path): fetch_lyrics(current, path)
-    open_file(path)
-    
-    
-
 def print_lyrics(current):
     #this if statement should be in the level above
     try:
@@ -87,5 +95,6 @@ def print_lyrics(current):
 if __name__ == "__main__":
     #add argparse so current can be read from args
     crt, path=getCurrent()
-    display_lyrics(crt, path)
-
+    if not os.path.exists(path): fetch_lyrics(crt, path)
+    open_file(path, fp=False)
+    

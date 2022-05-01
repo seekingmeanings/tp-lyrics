@@ -46,7 +46,7 @@ def getCurrent():
         print("no sub file found, skipping")
         pass
     else:
-        current=[fc.split('%')]
+        current=[fc.replace("\n",'').split('%')]
         print(current)
 
     

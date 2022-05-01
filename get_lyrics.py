@@ -34,18 +34,20 @@ def getCurrent():
         raise IndexError("failed to get the current song name.\nGot: {}".format(crt))
 
     try:
-        if False:
-            with open(f"{WORK_DIR}/name_sub.conf", 'r') as f:
-                print("sylib file found")
-                for i, line in enumerate(f):
-                    print(line)
-                    rp=tuple(str(line))
-                    print(rp)
-                    re.sub(rp[0], rp[1], f"{current[0][0]}%{current[0][1]}")
-                    
+        fc= f"{current[0][0]}%{current[0][1]}"
+        with open(f"{WORK_DIR}/name_sub.conf", 'r') as f:
+            print("sylib file found")
+            for i, line in enumerate(f):
+                print(line)
+                rp=[i.lstrip('"')  for i in re.split(r"\", \"", line)]
+                print(len(rp), ":\t", rp)
+                fc=re.sub(rp[0], rp[1], fc)
     except FileNotFoundError:
         print("no sub file found, skipping")
         pass
+    else:
+        current=[fc.split('%')]
+        print(current)
 
     
     return (current, "{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],\

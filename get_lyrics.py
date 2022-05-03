@@ -36,7 +36,7 @@ def getCurrent():
     try:
         fc= f"{current[0][0]}%{current[0][1]}"
         with open(f"{WORK_DIR}/name_sub.conf", 'r') as f:
-            print("sylib file found")
+            print("sub file found")
             for i, line in enumerate(f):
                 print(line)
                 rp=[i.lstrip('"')  for i in re.split(r"\", \"", line)]
@@ -48,7 +48,6 @@ def getCurrent():
     else:
         current=[fc.replace("\n",'').split('%')]
         print(current)
-
     
     return (current, "{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],\
                                                   song=current[0][1]))
@@ -56,10 +55,13 @@ def getCurrent():
 
 
 def fetch_lyrics(current, path):
+    """
+    fetch lytics from genius and store it locally
+    in the coressponding file that has been given to it
+    """
     import lyricsgenius
     
     headline=f"{current[0][1]} Lyrics"
-
     try:
         lapi=lyricsgenius.Genius(token, skip_non_songs=True)
         song=lapi.search_song(str(current[0][1]), str(current[0][0]))
@@ -85,18 +87,21 @@ def fetch_lyrics(current, path):
     
 
 def print_lyrics(current):
-    #this if statement should be in the level above
     try:
-        with open("{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],song=current[0][1]), 'r') as f:
+        with open("{D}/{artist}%{song}".format(D=DATA_DIR,artist=current[0][0],\
+                                               song=current[0][1]), 'r') as f:
             toast("lyrics found")
             return f.readlines()
     except FileNotFoundError:
         return fetch_lyrics(current)
 
                            
-if __name__ == "__main__":
+def main():
     #add argparse so current can be read from args
     crt, path=getCurrent()
     if not os.path.exists(path): fetch_lyrics(crt, path)
     open_file(path, fp=False)
     
+
+if __name__ == "__main__":
+    main()

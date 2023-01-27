@@ -39,17 +39,17 @@ def open_file(file_name:str,nid=randint(10,10000),idx=0,fp=False):
             check=True)
     else:
         _ceiled_val=ceil(int(len(nums) / LINES_PER_SITE))
-        if idx < 0:
-            raise IndexError("index is negative")
-        elif idx > _ceiled_val:
-            raise IndexError("index out of range")
-        elif idx == _ceiled_val:
+        if idx < 0 or idx > _ceiled_val:
+            raise IndexError("index OOR")
+
+        if idx == _ceiled_val:
             #that means. that the list is smaller than the screen
             #so the index for the print has to be set to max
             content=nums[idx*LINES_PER_SITE:]
         else:
             content=nums[idx*LINES_PER_SITE:(idx+1)*LINES_PER_SITE]
             
+            #really inside of the if else statement?
             run(["termux-notification", "-i", str(nid),  "--button1", "previous",\
                  "--button1-action", SELF_CALL.format(i=idx-1), "--button2", "next",\
                  "--button2-action", SELF_CALL.format(i=idx+1), "--button3", "exit", \

@@ -1,5 +1,6 @@
 from subprocess import run as sprun
 
+
 def termux_api_toast(msg: str,
                      position: str = "bottom",
                      background_color: str = "white",

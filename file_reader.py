@@ -23,11 +23,11 @@ def open_file(file_name: str, nid: int,
 
     if len(file_content) == 0:
         # the file is empty
-        
+
         # importing it here 'cause it's rarly used
         from re import sub as rs
         r_e = f"^{HOME_DIR}"
-        
+
         run(["termux-notification", "-i", str(nid), "--button1", "exit",
              "--button1-action", f"termux-notification-remove {nid}", "-t",
              f"file '{rs(r_e, '~', file_name)[:50]}' is empty"
@@ -44,8 +44,8 @@ def open_file(file_name: str, nid: int,
             # that means. that the list is smaller than the screen
             # so the index for the print has to be set to max
         content = file_content[page_idx*LINES_PER_SITE:]\
-            if page_idx == pages_in_file else\
-               file_content[page_idx*LINES_PER_SITE:(page_idx+1)*LINES_PER_SITE]
+            if page_idx == pages_in_file\
+            else file_content[page_idx*LINES_PER_SITE:(page_idx+1)*LINES_PER_SITE]
 
         print(SELF_CALL.format(i=page_idx))
         run(["termux-notification", "-i", str(nid),
@@ -64,7 +64,8 @@ def open_file(file_name: str, nid: int,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--notification_id", type=int, default=randint(10,10000))
+    parser.add_argument("-i", "--notification_id", type=int,
+                        default=randint(10, 10000))
     parser.add_argument("-f", "--file_name", type=str)
     parser.add_argument("-p", "--page", type=int, default=0)
     parser.add_argument("-m", "--music_mode", action="store_true")

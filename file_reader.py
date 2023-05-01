@@ -7,6 +7,7 @@ from math import ceil
 from random import randint
 
 HOME_DIR = "/data/data/com.termux/files/home"
+WORK_DIR = f"{HOME_DIR}/tp-lyrics"
 DEBUG = False
 
 

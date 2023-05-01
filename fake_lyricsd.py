@@ -2,7 +2,7 @@
 from subprocess import run
 
 NID = 1
-WORK_DIR = "/data/data/com.termux/files/home/lyrics"
+WORK_DIR = "/data/data/com.termux/files/home/tp-lyrics"
 
 # make sure the api is running
 run("termux-api-start", check=True)

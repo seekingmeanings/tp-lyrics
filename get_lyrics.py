@@ -4,14 +4,14 @@ import os.path
 import json
 import re
 
-from local_utils import toast
+from utils import termux_api_toast as toast
 from file_reader import open_file
 
-WORK_DIR = "/data/data/com.termux/files/home/lyrics"
+WORK_DIR = "/data/data/com.termux/files/home/tp-lyrics"
 DATA_DIR = WORK_DIR + "/data"
 
 # get the api-token
-with open("/data/data/com.termux/files/home/lyrics/genius-token") as f:
+with open(f"{WORK_DIR}/genius-token") as f:
     token = str().join(f.readlines())
 
 

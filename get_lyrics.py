@@ -10,21 +10,29 @@ from file_reader import open_file
 WORK_DIR = "/data/data/com.termux/files/home/tp-lyrics"
 DATA_DIR = WORK_DIR + "/data"
 
-# get the api-token
-with open(f"{WORK_DIR}/genius-token") as f:
-    token = str().join(f.readlines())
+# reqd config
+with open(f"{WORK_DIR}/conf.json", "r") as file:
+    conf = json.load(file)
 
 
 def getCurrent():
     try:
-        current = []
+        # current = []
         otp = sp.Popen('termux-notification-list', stdout=sp.PIPE)
         otp.wait()
-        for n in json.loads(
-                str().join([str(line.decode('utf-8').replace('\n', ''))
-                            for line in otp.stdout])):
-            if n['packageName'] == 'com.rhapsody.alditalk' and n['id'] != 1:
-                current.append((n['content'], n['title']))
+        # for n in json.loads(
+        #        str().join([str(line.decode('utf-8').replace('\n', ''))
+        #                    for line in otp.stdout])):
+        #    if n['packageName'] == 'com.rhapsody.alditalk' and n['id'] != 1:
+        #        current.append((n['content'], n['title']))
+
+        current = [(n["content"], n["title"],) for n in
+                   json.loads("".join([str(line.decode("utf-8").replace("\n", ""))
+                               for line in otp.stdout]))
+                   if any(all(n[attr] == val for attr, val in provider.items())
+                          for provider in conf["player_signatures"].values())
+                   ]
+        
     finally:
         otp.stdout.close()
 
@@ -65,7 +73,10 @@ def fetch_lyrics(current, path):
 
     headline = f"{current[0][1]} Lyrics"
     try:
-        lapi = lyricsgenius.Genius(token, skip_non_songs=True)
+        lapi = lyricsgenius.Genius(
+            conf["genius_token"],
+            skip_non_songs=True,
+        )
         song = lapi.search_song(str(current[0][1]), str(current[0][0]))
     except ConnectionError as e:
         toast("connection to genius timed out")

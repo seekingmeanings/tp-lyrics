@@ -1,0 +1,12 @@
+{
+    "genius_token": "PJ4_ahvV57ITS2XkkxNCTjezikiejDCi1dx1l2ScvysOBT4rOvegWHLciw1AQgHP",
+    
+    "player_signatures": {
+	"aldi_life_music": {
+	    "packageName": "com.rhapsody.alditalk"
+	},
+	"ViMusic": {
+	    "packageName": "it.vfsfitvnm.vimusic"
+	}
+    }
+}

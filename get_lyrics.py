@@ -8,7 +8,7 @@ from utils import termux_api_toast as toast
 from file_reader import open_file
 
 WORK_DIR = "/data/data/com.termux/files/home/tp-lyrics"
-DATA_DIR = WORK_DIR + "/data"
+DATA_DIR = WORK_DIR + "/cache"
 
 # reqd config
 with open(f"{WORK_DIR}/conf.json", "r") as file:
@@ -27,8 +27,9 @@ def getCurrent():
         #        current.append((n['content'], n['title']))
 
         current = [(n["content"], n["title"],) for n in
-                   json.loads("".join([str(line.decode("utf-8").replace("\n", ""))
-                               for line in otp.stdout]))
+                   json.loads("".join(
+                       [str(line.decode("utf-8").replace("\n", ""))
+                        for line in otp.stdout]))
                    if any(all(n[attr] == val for attr, val in provider.items())
                           for provider in conf["player_signatures"].values())
                    ]
@@ -71,7 +72,7 @@ def fetch_lyrics(current, path):
     """
     import lyricsgenius
 
-    headline = f"{current[0][1]} Lyrics"
+    headline = f"[0-9]+ Contributors{current[0][1]} Lyrics"
     try:
         lapi = lyricsgenius.Genius(
             conf["genius_token"],
@@ -117,7 +118,7 @@ def main():
     crt, path = getCurrent()
     if not os.path.exists(path):
         fetch_lyrics(crt, path)
-    open_file(path, fp=False)
+    open_file(path, full_path_title=False)
 
 
 if __name__ == "__main__":

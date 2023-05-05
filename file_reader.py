@@ -11,9 +11,12 @@ WORK_DIR = f"{HOME_DIR}/tp-lyrics"
 DEBUG = False
 
 
-def open_file(file_name: str, nid: int,
+def open_file(file_name: str, nid: int = None,
               page_idx: int = 0, full_path_title: bool = False):
     LINES_PER_SITE = 11
+
+    nid = nid if nid else randint(10, 10000)
+    
     SELF_CALL = "python3 $HOME/tp-lyrics/file_reader.py " +\
         f"-i {nid} -f '{file_name}'" +\
         (" -m" if full_path_title else "") + " -p {i}" +\
@@ -66,7 +69,7 @@ def open_file(file_name: str, nid: int,
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--notification_id", type=int,
-                        default=randint(10, 10000))
+                        required=False)
     parser.add_argument("-f", "--file_name", type=str)
     parser.add_argument("-p", "--page", type=int, default=0)
     parser.add_argument("-m", "--music_mode", action="store_true")

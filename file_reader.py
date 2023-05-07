@@ -3,6 +3,8 @@
 import argparse
 from subprocess import run
 
+from os.path import abspath
+
 from math import ceil
 from random import randint
 
@@ -11,14 +13,17 @@ WORK_DIR = f"{HOME_DIR}/tp-lyrics"
 DEBUG = False
 
 
-def open_file(file_name: str, nid: int = None,
-              page_idx: int = 0, full_path_title: bool = False):
-    LINES_PER_SITE = 11
+def open_file(
+        file_name: str,
+        nid: int = None,
+        page_idx: int = 0,
+        full_path_title: bool = False,
+        LINES_PER_SITE: int = 11,):
 
     nid = nid if nid else randint(10, 10000)
     
     SELF_CALL = "python3 $HOME/tp-lyrics/file_reader.py " +\
-        f"-i {nid} -f '{file_name}'" +\
+        f"-i {nid} -f '{abspath(file_name)}'" +\
         (" -m" if full_path_title else "") + " -p {i}" +\
         (" >$HOME/tpl.log 2>&1" if DEBUG else "")
 
@@ -68,12 +73,17 @@ def open_file(file_name: str, nid: int = None,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--notification_id", type=int,
-                        required=False)
-    parser.add_argument("-f", "--file_name", type=str)
+    parser.add_argument("-i", "--notification_id", type=int)
+    parser.add_argument("-f", "--file_name", type=str, required=True)
     parser.add_argument("-p", "--page", type=int, default=0)
     parser.add_argument("-m", "--music_mode", action="store_true")
-    args = parser.parse_args()
+    parser.add_argument("--lines_per_site", type=int, default=11)
+    pargs = parser.parse_args()
 
-    open_file(file_name=args.file_name, nid=int(args.notification_id),
-              page_idx=int(args.page), full_path_title=args.music_mode)
+    open_file(
+        file_name=pargs.file_name,
+        nid=pargs.notification_id,
+        page_idx=int(pargs.page),
+        full_path_title=pargs.music_mode,
+        LINES_PER_SITE=pargs.lines_per_site
+    )

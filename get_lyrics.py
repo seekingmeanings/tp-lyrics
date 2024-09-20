@@ -80,7 +80,6 @@ def fetch_lyrics(current, path):
             skip_non_songs=True,
         )
         song = lapi.search_song(str(current[0][1]), str(current[0][0]))
-        breakpoint()
     except ConnectionError as e:
         toast("connection to genius timed out")
         raise ConnectionError(e)

@@ -72,13 +72,15 @@ def fetch_lyrics(current, path):
     """
     import lyricsgenius
 
-    headline = f"[0-9]+ Contributors{current[0][1]} Lyrics"
+    headline = \
+        f"^([0-9]+) Contributors(Translations.+)?{current[0][1]} Lyrics"
     try:
         lapi = lyricsgenius.Genius(
             conf["genius_token"],
             skip_non_songs=True,
         )
         song = lapi.search_song(str(current[0][1]), str(current[0][0]))
+        breakpoint()
     except ConnectionError as e:
         toast("connection to genius timed out")
         raise ConnectionError(e)
@@ -90,7 +92,8 @@ def fetch_lyrics(current, path):
                                .format(exp=headline,
                                        got=song.lyrics.splitlines()[0]))
         with open(path, 'x') as f:
-            f.write(song.lyrics.replace(f"{current[0][1]} Lyrics", '', 1))
+            f.write(re.sub(headline, '', song.lyrics))
+            #    song.lyrics.replace(f"{current[0][1]} Lyrics", '', 1))
         toast("lyrics fetched from genius")
     except AttributeError:
         toast("genius didn't send anything back")
